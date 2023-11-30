@@ -8,7 +8,7 @@ const getJwtToken = () => {
 const axiosInstance = axios.create({
   //baseURL: 'http://3.38.227.148:8081',
   // API의 기본 URL
-  baseURL: 'http://localhost:8081',
+  baseURL: 'http://192.168.0.17:8081',
   // baseURL: 'http://192.168.219.107:8081', // API의 기본 URL 시연할 경우에 쓸 url
   headers: {
     Authorization: getJwtToken()
@@ -23,7 +23,7 @@ const axiosQR = axios.create({
 });
 const Img = axios.create({
   // baseURL: 'http://3.38.227.148:8081',
-  baseURL: 'http://localhost:8081',
+  baseURL: 'http://192.168.0.17:8081',
   headers: {
     Authorization: getJwtToken(),
     'Content-Type': 'multipart/form-data', // 이미지 업로드를 위한 설정

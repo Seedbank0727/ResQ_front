@@ -128,6 +128,7 @@ const TimeLineCalendar = ({ events, resources }) => {
               </ListItemIcon>
               <ListItemText
                 primary={
+                  rezData?.name &&
                   rezData &&
                   rezData.name +
                     ' ' +

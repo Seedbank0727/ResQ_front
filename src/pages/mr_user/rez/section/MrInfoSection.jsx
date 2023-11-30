@@ -1,32 +1,26 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material';
-import { Chip } from '@mui/material';
 import styled from '@emotion/styled';
-import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import DateRangeRoundedIcon from '@mui/icons-material/DateRangeRounded';
+import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import { Box, Chip, IconButton, Stack, Typography } from '@mui/material';
 
-import { setUserData } from '../../../../redux/reducer/userSlice';
-import { setBmData } from '../../../../redux/reducer/BmSlice';
-import { setMrRecommendData } from '../../../../redux/reducer/MrRecommendSlice';
 import RoomPreferencesRoundedIcon from '@mui/icons-material/RoomPreferencesRounded';
 import TagRoundedIcon from '@mui/icons-material/TagRounded';
-import TurnedInNotRoundedIcon from '@mui/icons-material/TurnedInNotRounded';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Carousel from '../../../../components/mr_user/Carousel';
-import { useState } from 'react';
-import { PAGE_INNER_PADDING } from '../../../../config';
-import Tag from '../../../../components/mr_user/Tag';
-import { convertDayToText } from '../../../../utils/convertDayToText';
-import { palette } from '../../../../theme/palette';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import axiosInstance from '../../../../utils/axios';
+import { setBmData } from '../../../../redux/reducer/BmSlice';
 import {
   openSanckbar,
   setSnackbarContent
 } from '../../../../redux/reducer/SnackbarSlice';
+import { setUserData } from '../../../../redux/reducer/userSlice';
+import { palette } from '../../../../theme/palette';
+import axiosInstance from '../../../../utils/axios';
+import { convertDayToText } from '../../../../utils/convertDayToText';
 
 const MrInfoSection = ({ data }) => {
   const {
@@ -45,9 +39,23 @@ const MrInfoSection = ({ data }) => {
   const dispatch = useDispatch();
   // 즐겨찾기 별 버튼
   const [isBm, setIsBm] = useState(false);
+  // 어드민 여부
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const userData = useSelector(setUserData).payload.user;
   const bmData = useSelector(setBmData).payload.bm;
+
+  useEffect(() => {
+    // 현재 URL 주소 가져오기
+    const currentUrl = window.location.href;
+
+    // URL에 '/admin' 포함 여부 확인
+    const isAdmin = currentUrl.includes('/admin');
+    if (isAdmin) {
+      setIsAdmin(true);
+    }
+  }, []);
+
   // 즐겨찾기 회의실 리덕스 데이터
   const { mr_list } = bmData;
 
@@ -101,6 +109,19 @@ const MrInfoSection = ({ data }) => {
     setBookmark(!bookmark);
   };
 
+  // 분기 처리를 통한 아이콘 렌더링
+  const renderIcon = () => {
+    if (isAdmin) {
+      return null;
+    } else {
+      return bookmark ? (
+        <StarRoundedIcon fontSize="large" color="primary" />
+      ) : (
+        <StarBorderRoundedIcon fontSize="large" color="primary" />
+      );
+    }
+  };
+
   return (
     <Box
       component={'section'}
@@ -113,11 +134,7 @@ const MrInfoSection = ({ data }) => {
             {/* 회의실명 영역 */}
             <StyledRoomName>{mr_name}</StyledRoomName>
             <IconButton onClick={handleBookmark} disabled={bookmark}>
-              {bookmark ? (
-                <StarRoundedIcon fontSize="large" color="primary" />
-              ) : (
-                <StarBorderRoundedIcon fontSize="large" color="primary" />
-              )}
+              {renderIcon()}
             </IconButton>
           </StyledRoomTitleInfoWrap>
 
